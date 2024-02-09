@@ -1,6 +1,8 @@
 package com.sistema.apirestaurante.entidades;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -35,6 +37,8 @@ public class Producto implements Serializable {
     @Column(name = "estado", nullable = false)
     private Boolean estado = true;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+    @JoinColumn(name = "categoria_id")
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Categoria categoria;
 

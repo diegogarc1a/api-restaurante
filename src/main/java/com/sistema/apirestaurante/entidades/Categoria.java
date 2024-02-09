@@ -1,6 +1,9 @@
 package com.sistema.apirestaurante.entidades;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +30,8 @@ public class Categoria implements Serializable {
     @Column(name = "estado", nullable = false)
     private Boolean estado = true;
 
+
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "categoria")
     private List<Producto> listaProductos = new ArrayList<>();
 
