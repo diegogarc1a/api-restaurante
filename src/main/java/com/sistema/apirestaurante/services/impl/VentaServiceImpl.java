@@ -120,8 +120,12 @@ public class VentaServiceImpl implements VentaService {
     }
 
     @Override
-    public void cambiarEstado(Long id) throws Exception {
-
+    public void cambiarEstado(Venta venta) throws Exception {
+        Long id = venta.getId();
+        Venta ventaGuardar = ventaRepository.findById(id).get();
+        ventaGuardar.setEstado(venta.getEstado());
+        ventaGuardar.setListaDetalleVenta(null);
+        ventaRepository.save(ventaGuardar);
     }
 
 

@@ -47,8 +47,7 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public void cambiarEstado(Long id) throws Exception {
-        Producto producto = new Producto();
-        producto = productoRepository.findById(id).get();
+        Producto producto = productoRepository.findById(id).get();
         producto.setEstado(!producto.getEstado());
         productoRepository.save(producto);
     }

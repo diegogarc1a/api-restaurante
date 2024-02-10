@@ -46,6 +46,12 @@ public class VentaController {
         ventaService.eliminar(id);
     }
 
+    @PutMapping("/estado")
+    public void cambiarEstado(@RequestBody Venta venta)throws Exception{
+        ventaService.cambiarEstado(venta);
+    }
+
+
 
     //PARA USAR CON DTOS
     /*@PostMapping("/")

@@ -22,5 +22,5 @@ public interface VentaService {
 
     void eliminar(Long id) throws Exception;
 
-    void cambiarEstado(Long id) throws Exception;
+    void cambiarEstado(Venta venta) throws Exception;
 }
