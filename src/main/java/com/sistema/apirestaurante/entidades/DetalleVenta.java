@@ -1,5 +1,6 @@
 package com.sistema.apirestaurante.entidades;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -28,10 +29,13 @@ public class DetalleVenta implements Serializable {
     @Column(name = "total", nullable = false, precision = 10, scale = 2)
     private BigDecimal total;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "venta_id")
     private Venta venta;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "producto_id")
     private Producto producto;
+
 }

@@ -1,8 +1,12 @@
 package com.sistema.apirestaurante.entidades;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -24,6 +28,9 @@ public class Venta implements Serializable {
     private String nombrecliente;
 
     @Column(name = "fecha", nullable = false)
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime fecha;
 
     @Column(name = "preciototal", nullable = false, precision = 10, scale = 2)
@@ -32,7 +39,11 @@ public class Venta implements Serializable {
     @Column(name = "estado", nullable = false, length = 50)
     private String estado;
 
+
+    @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "venta")
     private List<DetalleVenta> listaDetalleVenta = new ArrayList<>();
+
+
 
 }
