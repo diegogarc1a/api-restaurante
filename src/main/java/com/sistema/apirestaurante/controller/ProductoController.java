@@ -1,11 +1,13 @@
 package com.sistema.apirestaurante.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sistema.apirestaurante.entidades.Producto;
 import com.sistema.apirestaurante.repositories.ProductoRepository;
 import com.sistema.apirestaurante.services.ProductoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/productos")
@@ -21,8 +23,15 @@ public class ProductoController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Producto> guardarProducto(@RequestBody Producto producto) throws Exception{
-        return ResponseEntity.ok(productoService.guardarProducto(producto));
+    public ResponseEntity<Producto> guardarProducto(@RequestParam String productoJSON, @RequestParam MultipartFile file) throws Exception{
+        ObjectMapper objectMapper = new ObjectMapper();
+        Producto producto = objectMapper.readValue(productoJSON, Producto.class);
+        return ResponseEntity.ok(productoService.guardarProducto(producto, file));
+    }
+
+    @PostMapping("/foto")
+    public void guardarFoto(@RequestParam("file") MultipartFile file, @RequestParam("id") Long id) throws Exception{
+        productoService.guardarFoto(file,id);
     }
 
     @PutMapping("/")
