@@ -10,8 +10,9 @@ import com.sistema.apirestaurante.repositories.DetalleVentaRepository;
 import com.sistema.apirestaurante.repositories.ProductoRepository;
 import com.sistema.apirestaurante.repositories.VentaRepository;
 import com.sistema.apirestaurante.services.VentaService;
-import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -36,6 +37,14 @@ public class VentaServiceImpl implements VentaService {
 
     @Override
     public Venta guardarVenta(Venta venta, List<DetalleVenta> listaDetalleVenta) throws Exception {
+
+        /*Venta ventaGuardar = new Venta();
+        ventaGuardar.setId(venta.getId());
+        ventaGuardar.setNombrecliente(venta.getNombrecliente());
+        ventaGuardar.setEstado(venta.getEstado());
+        //Set fecha
+        LocalDateTime f = LocalDateTime.now();
+        ventaGuardar.setFecha(f);*/
 
         Venta ventaGuardar = venta;
         ventaGuardar.setListaDetalleVenta(null);

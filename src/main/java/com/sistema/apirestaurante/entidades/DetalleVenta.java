@@ -2,6 +2,8 @@ package com.sistema.apirestaurante.entidades;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -17,15 +19,19 @@ public class DetalleVenta implements Serializable {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @NotNull
     @Column(name = "cantidad", scale = 8)
     private Integer cantidad;
 
+    @NotBlank
     @Column(name = "descripcion", nullable = false, length = 255)
     private String descripcion;
 
+    @NotNull
     @Column(name = "precio", nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
+    @NotNull
     @Column(name = "total", nullable = false, precision = 10, scale = 2)
     private BigDecimal total;
 

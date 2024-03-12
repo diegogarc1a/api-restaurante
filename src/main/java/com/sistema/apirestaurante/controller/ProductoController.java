@@ -3,15 +3,22 @@ package com.sistema.apirestaurante.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sistema.apirestaurante.entidades.Producto;
+import com.sistema.apirestaurante.exeptions.ErrorResponse;
 import com.sistema.apirestaurante.repositories.ProductoRepository;
 import com.sistema.apirestaurante.services.ProductoService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/productos")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class ProductoController {
 
     private final ProductoService productoService;
@@ -22,10 +29,17 @@ public class ProductoController {
         this.productoRepository = productoRepository;
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
     @PostMapping("/")
-    public ResponseEntity<Producto> guardarProducto(@RequestParam String productoJSON, @RequestParam MultipartFile file) throws Exception{
-        ObjectMapper objectMapper = new ObjectMapper();
-        Producto producto = objectMapper.readValue(productoJSON, Producto.class);
+    public ResponseEntity<?> guardarProducto(@Valid @RequestPart("producto") Producto producto, BindingResult result, @RequestPart(value = "file", required = false) MultipartFile file) throws Exception{
+        if( result.hasFieldErrors() ){
+            return validation(result);
+        }
         return ResponseEntity.ok(productoService.guardarProducto(producto, file));
     }
 
@@ -34,9 +48,24 @@ public class ProductoController {
         productoService.guardarFoto(file,id);
     }
 
-    @PutMapping("/")
-    public ResponseEntity<Producto> editarProducto(@RequestBody Producto producto) throws Exception{
+    /*@PutMapping("/")
+    public ResponseEntity<?> editarProducto(@Valid @RequestBody Producto producto, BindingResult result) throws Exception{
+        if( result.hasFieldErrors() ){
+            return validation(result);
+        }
         return ResponseEntity.ok(productoService.editarProducto(producto));
+    }
+*/
+
+    @PutMapping("/")
+    public ResponseEntity<?> editarProducto(@Valid @RequestPart("producto") Producto producto, BindingResult result, @RequestPart(value = "file", required = false) MultipartFile file) throws Exception{
+        if( result.hasFieldErrors() ){
+            return validation(result);
+        }
+        if(file == null){
+
+        }
+        return ResponseEntity.ok(productoService.guardarProducto(producto, file));
     }
 
     @GetMapping("/{id}")
@@ -59,4 +88,11 @@ public class ProductoController {
         productoService.cambiarEstado(id);
     }
 
+    private ResponseEntity<?> validation(BindingResult result) {
+        Map<String, String> errors = new HashMap<>();
+        result.getFieldErrors().forEach( err -> {
+            errors.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
+        } );
+        return ResponseEntity.badRequest().body(errors);
+    }
 }

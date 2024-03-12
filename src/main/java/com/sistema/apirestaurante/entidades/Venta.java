@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -17,25 +19,30 @@ import java.util.List;
 @Entity
 @Table(name = "venta")
 @Data
-public class Venta implements Serializable {
+public class Venta implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @NotBlank
     @Column(name = "nombrecliente", nullable = false, length = 100)
     private String nombrecliente;
 
+    @NotNull
     @Column(name = "fecha", nullable = false)
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime fecha;
+    private LocalDateTime fecha = LocalDateTime.now();
 
+
+    @NotNull
     @Column(name = "preciototal", nullable = false, precision = 10, scale = 2)
     private BigDecimal preciototal;
 
+    @NotBlank
     @Column(name = "estado", nullable = false, length = 50)
     private String estado;
 

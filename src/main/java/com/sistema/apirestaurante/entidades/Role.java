@@ -1,25 +1,26 @@
 package com.sistema.apirestaurante.entidades;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
-@Table(name = "usuariorol")
+@Table(name = "role")
 @Data
-public class UsuarioRol {
+public class Role {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @JsonIgnoreProperties(value = {"usuarioRoles"})
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Usuario usuario;
+    @Column(name = "name", unique = true,nullable = false)
+    private String name;
 
-
-    @JsonIgnoreProperties(value = {"usuarioRoles"})
-    @ManyToOne
-    private Rol rol;
-
+    @JsonIgnoreProperties({"roles", "handler", "hibernateLazyInitializer"})
+    @ManyToMany(mappedBy = "roles")
+    private List<User> users;
 }

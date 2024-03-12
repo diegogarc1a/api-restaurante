@@ -4,8 +4,13 @@ import com.sistema.apirestaurante.dtos.VentaPostDTO;
 import com.sistema.apirestaurante.entidades.Venta;
 import com.sistema.apirestaurante.repositories.VentaRepository;
 import com.sistema.apirestaurante.services.VentaService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/ventas")
@@ -22,12 +27,19 @@ public class VentaController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Venta> guardarVenta(@RequestBody Venta venta) throws Exception{
+    public ResponseEntity<?> guardarVenta(@Valid @RequestBody Venta venta, BindingResult result) throws Exception{
+        if( result.hasFieldErrors() ){
+            return validation(result);
+        }
+
         return ResponseEntity.ok(ventaService.guardarVenta(venta, venta.getListaDetalleVenta()));
     }
 
     @PutMapping("/")
-    public ResponseEntity<Venta> editarVenta(@RequestBody Venta venta) throws Exception{
+    public ResponseEntity<?> editarVenta(@Valid @RequestBody Venta venta, BindingResult result) throws Exception{
+        if( result.hasFieldErrors() ){
+            return validation(result);
+        }
         return ResponseEntity.ok(ventaService.editarVenta(venta, venta.getListaDetalleVenta()));
     }
 
@@ -49,6 +61,14 @@ public class VentaController {
     @PutMapping("/estado")
     public void cambiarEstado(@RequestBody Venta venta)throws Exception{
         ventaService.cambiarEstado(venta);
+    }
+
+    private ResponseEntity<?> validation(BindingResult result) {
+        Map<String, String> errors = new HashMap<>();
+        result.getFieldErrors().forEach( err -> {
+            errors.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
+        } );
+        return ResponseEntity.badRequest().body(errors);
     }
 
 
