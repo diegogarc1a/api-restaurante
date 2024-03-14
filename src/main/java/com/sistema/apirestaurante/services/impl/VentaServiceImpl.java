@@ -1,7 +1,5 @@
 package com.sistema.apirestaurante.services.impl;
 
-import com.sistema.apirestaurante.dtos.DetalleVentaPostDTO;
-import com.sistema.apirestaurante.dtos.VentaPostDTO;
 import com.sistema.apirestaurante.entidades.DetalleVenta;
 import com.sistema.apirestaurante.entidades.Producto;
 import com.sistema.apirestaurante.entidades.Venta;
@@ -11,6 +9,10 @@ import com.sistema.apirestaurante.repositories.ProductoRepository;
 import com.sistema.apirestaurante.repositories.VentaRepository;
 import com.sistema.apirestaurante.services.VentaService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,33 +30,27 @@ public class VentaServiceImpl implements VentaService {
 
     private final MapStructMapper mapStructMapper;
 
-    public VentaServiceImpl(VentaRepository ventaRepository, DetalleVentaRepository detalleVentaRepository, ProductoRepository productoRepository, MapStructMapper mapStructMapper) {
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
+
+
+    public VentaServiceImpl(VentaRepository ventaRepository, DetalleVentaRepository detalleVentaRepository, ProductoRepository productoRepository, MapStructMapper mapStructMapper, SimpMessagingTemplate simpMessagingTemplate) {
         this.ventaRepository = ventaRepository;
         this.detalleVentaRepository = detalleVentaRepository;
         this.productoRepository = productoRepository;
         this.mapStructMapper = mapStructMapper;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
+
+
 
     @Override
     public Venta guardarVenta(Venta venta, List<DetalleVenta> listaDetalleVenta) throws Exception {
-
-        /*Venta ventaGuardar = new Venta();
-        ventaGuardar.setId(venta.getId());
-        ventaGuardar.setNombrecliente(venta.getNombrecliente());
-        ventaGuardar.setEstado(venta.getEstado());
-        //Set fecha
-        LocalDateTime f = LocalDateTime.now();
-        ventaGuardar.setFecha(f);*/
-
         Venta ventaGuardar = venta;
         ventaGuardar.setListaDetalleVenta(null);
-
         LocalDateTime f = LocalDateTime.now();
-
         ventaGuardar.setFecha(f);
         ventaRepository.save(ventaGuardar);
-
-
         for (DetalleVenta dv : listaDetalleVenta){
             dv.setVenta(ventaGuardar);
 
@@ -74,7 +70,12 @@ public class VentaServiceImpl implements VentaService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         ventaGuardar.setPreciototal(precioTotalVenta);
 
-        return ventaRepository.save(venta);
+        ventaRepository.save(venta);
+        venta.setListaDetalleVenta(listaDetalleVenta);
+
+        //Envia los datos al WS
+        simpMessagingTemplate.convertAndSend("/topic/ventas",venta);
+        return venta;
 
     }
 

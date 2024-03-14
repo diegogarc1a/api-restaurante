@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "detalleventa")
 @Data
+@ToString(exclude = {"listaDetalleVenta"})
 public class DetalleVenta implements Serializable {
 
     @Id

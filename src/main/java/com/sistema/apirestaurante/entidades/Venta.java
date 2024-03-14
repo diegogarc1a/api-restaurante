@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -19,6 +20,7 @@ import java.util.List;
 @Entity
 @Table(name = "venta")
 @Data
+@ToString(exclude = {"listaDetalleVenta"})
 public class Venta implements Serializable{
 
     @Id
