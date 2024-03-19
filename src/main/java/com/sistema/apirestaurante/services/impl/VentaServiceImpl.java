@@ -84,11 +84,7 @@ public class VentaServiceImpl implements VentaService {
         Venta ventaGuardar = venta;
         ventaGuardar.setListaDetalleVenta(null);
 
-   /*     LocalDateTime f = LocalDateTime.now();
-        ventaGuardar.setFecha(f);*/
-
         ventaRepository.save(ventaGuardar);
-
 
         for (DetalleVenta dv : detalleVentas){
             dv.setVenta(ventaGuardar);
@@ -107,14 +103,21 @@ public class VentaServiceImpl implements VentaService {
         BigDecimal precioTotalVenta = detalleVentas.stream()
                 .map(DetalleVenta::getTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        ventaGuardar.setPreciototal(precioTotalVenta);
 
-        return ventaRepository.save(venta);
+        ventaRepository.save(venta);
+        venta.setListaDetalleVenta(detalleVentas);
+
+        //Envia los datos al WS
+        simpMessagingTemplate.convertAndSend("/topic/editventas",venta);
+        return venta;
     }
 
     @Override
     public List<Venta> listaVentas() throws Exception {
-        return ventaRepository.findAll();
+       /* return ventaRepository.findAll();*/
+        List<Venta> ventas = ventaRepository.findAll();
+            
+        return ventas;
     }
 
     @Override

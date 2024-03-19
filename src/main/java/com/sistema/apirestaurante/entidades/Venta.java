@@ -44,9 +44,10 @@ public class Venta implements Serializable{
     @Column(name = "preciototal", nullable = false, precision = 10, scale = 2)
     private BigDecimal preciototal;
 
-    @NotBlank
+    @NotNull
     @Column(name = "estado", nullable = false, length = 50)
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    private EstadoVenta estado;
 
 
     @JsonManagedReference
