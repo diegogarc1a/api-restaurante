@@ -5,6 +5,7 @@ import com.sistema.apirestaurante.dtos.VentaPostDTO;
 import com.sistema.apirestaurante.entidades.DetalleVenta;
 import com.sistema.apirestaurante.entidades.Venta;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface VentaService {
@@ -15,6 +16,12 @@ public interface VentaService {
     Venta guardarVenta(Venta venta, List<DetalleVenta> detalleVentas) throws Exception;
 
     Venta editarVenta(Venta venta, List<DetalleVenta> detalleVentas) throws Exception;
+
+    Venta finalizarVenta(Long id) throws Exception;
+
+    Venta pagarVenta(Long id, BigDecimal cantidad) throws Exception;
+
+    Venta cambiarEstadoDetalleVenta(DetalleVenta detalleVenta) throws Exception;
 
     List<Venta> listaVentas() throws Exception;
 

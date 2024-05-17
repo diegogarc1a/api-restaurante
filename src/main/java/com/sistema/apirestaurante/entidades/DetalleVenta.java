@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "detalleventa")
 @Data
-@ToString(exclude = {"listaDetalleVenta"})
+    @ToString(exclude = {"listaDetalleVenta"})
 public class DetalleVenta implements Serializable {
 
     @Id
@@ -36,6 +36,15 @@ public class DetalleVenta implements Serializable {
     @NotNull
     @Column(name = "total", nullable = false, precision = 10, scale = 2)
     private BigDecimal total;
+
+    @NotNull
+    @Column(name = "estado", nullable = false)
+    private Boolean estado = false;
+
+    @NotNull
+    @Column(name = "estadofinal", nullable = false)
+    private Boolean estadoFinal = false;
+
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

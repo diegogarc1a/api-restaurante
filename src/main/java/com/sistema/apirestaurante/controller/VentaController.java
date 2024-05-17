@@ -1,6 +1,7 @@
 package com.sistema.apirestaurante.controller;
 
 import com.sistema.apirestaurante.dtos.VentaPostDTO;
+import com.sistema.apirestaurante.entidades.DetalleVenta;
 import com.sistema.apirestaurante.entidades.Venta;
 import com.sistema.apirestaurante.repositories.VentaRepository;
 import com.sistema.apirestaurante.services.VentaService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +43,21 @@ public class VentaController {
             return validation(result);
         }
         return ResponseEntity.ok(ventaService.editarVenta(venta, venta.getListaDetalleVenta()));
+    }
+
+    @PatchMapping("/finalizarVenta")
+    public ResponseEntity<?> finalizarVenta(@RequestBody Venta venta ) throws Exception{
+        return ResponseEntity.ok(ventaService.finalizarVenta(venta.getId()));
+    }
+
+    @PatchMapping("/pagarVenta")
+    public ResponseEntity<?> pagarVenta(@RequestParam Long id, @RequestParam BigDecimal cantidad) throws Exception {
+        return ResponseEntity.ok(ventaService.pagarVenta(id, cantidad));
+    }
+
+    @PatchMapping("/cambiarEstadoDv")
+    public ResponseEntity<?> editarDetalleVenta(@RequestBody DetalleVenta dv) throws Exception{
+        return ResponseEntity.ok(ventaService.cambiarEstadoDetalleVenta(dv));
     }
 
     @GetMapping("/")
