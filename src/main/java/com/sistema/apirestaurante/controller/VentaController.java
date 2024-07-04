@@ -83,6 +83,7 @@ public class VentaController {
     }
 */
 
+    @CrossOrigin("*")
     @GetMapping("/lista")
     public ResponseEntity<Page<Venta>> listaVentas(
             @RequestParam(defaultValue = "0") int page,
